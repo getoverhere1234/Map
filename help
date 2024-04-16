@@ -1,0 +1,80 @@
+Certainly! Let's break down the provided code step by step:
+
+Step 1: Import Required Libraries
+python
+Copy code
+import streamlit as st
+import folium
+import pandas as pd
+from streamlit_folium import folium_static
+streamlit: Streamlit library for creating web apps.
+folium: Folium library for creating Leaflet maps.
+pandas: Pandas library for data manipulation and analysis.
+folium_static: A helper function from the streamlit_folium package to display Folium maps in Streamlit apps.
+Step 2: Define the Main Function
+python
+Copy code
+def main():
+    st.title("Soil Status Map")
+Define the main() function.
+Set the title of the Streamlit app to "Soil Status Map".
+Step 3: File Uploader Widget
+python
+Copy code
+    # File uploader widget
+    uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
+Create a file uploader widget that allows users to upload a CSV file.
+The accepted file type is CSV.
+Step 4: Check Uploaded File and Process Data
+python
+Copy code
+    if uploaded_file is not None:
+        # Read data from uploaded CSV file
+        data = pd.read_csv(uploaded_file)
+Check if a file has been uploaded.
+If a file is uploaded, read the CSV file into a pandas DataFrame named data.
+Step 5: Validate Required Columns
+python
+Copy code
+        # Check if the required columns are present
+        if 'Latitute' in data.columns and 'Longititude' in data.columns and 'Code' in data.columns:
+Check if the uploaded CSV file contains the required columns: 'Latitute', 'Longititude', and 'Code'.
+Step 6: Create Folium Map
+python
+Copy code
+            # Create a base map
+            m = folium.Map(location=[data['Latitute'].mean(), data['Longititude'].mean()], zoom_start=10)
+Create a base Folium map centered at the mean latitude and longitude of the uploaded data with a zoom level of 10.
+Step 7: Add Markers to the Map
+python
+Copy code
+            # Add markers to the map based on the data
+            for index, row in data.iterrows():
+                folium.Marker(
+                    location=[row['Latitute'], row['Longititude']],
+                    popup=f"Code: {row['Code']}",
+                    icon=folium.Icon(color='red' if row['Code'] == 1 else 'blue' if row['Code'] == 2 else 'green')
+                ).add_to(m)
+Iterate through the rows of the DataFrame and add a marker for each row to the Folium map.
+The marker location is based on the 'Latitute' and 'Longititude' columns.
+The marker popup displays the 'Code' value.
+The marker icon color is determined by the 'Code' value (red for 1, blue for 2, and green for others).
+Step 8: Display the Folium Map in Streamlit
+python
+Copy code
+            # Display the map using folium_static
+            folium_static(m)
+Use folium_static from the streamlit_folium package to display the Folium map in the Streamlit app.
+Step 9: Handle Missing Required Columns
+python
+Copy code
+        else:
+            st.warning("The uploaded CSV file does not contain the required columns: 'Latitute', 'Longititude', 'Code'.")
+If the uploaded CSV file does not contain the required columns, display a warning message in the Streamlit app.
+Step 10: Main Execution
+python
+Copy code
+if __name__ == "__main__":
+    main()
+Execute the main() function when the script is run.
+That's a step-by-step explanation of the provided code! Let me know if you have any questions or if any part needs further clarification.
